@@ -1665,7 +1665,7 @@ def get_canvas_data( fnames, keys, dic ):
 ###############################################################################
 def simplify_dic(dic):
 
-    for key, value in dic.iteritems():
+    for key, value in dic.items():
         if value.shape[0] == 1:
             dic[key] = value[0]
         elif (len(value.shape) > 1) and (value.shape[1] == 1):
