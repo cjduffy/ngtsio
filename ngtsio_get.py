@@ -1221,6 +1221,7 @@ def pyfits_get_data(fnames, obj_ids, ind_objs, keys, bls_rank, ind_time=slice(No
             # EXCLUDE OBJ_IDs from subkeys
             if 'OBJ_ID' in subkeys: subkeys = np.delete(subkeys, np.where(subkeys=='OBJ_ID'))
             if 'FLAGS' in subkeys: subkeys = np.delete(subkeys, np.where(subkeys=='FLAGS'))
+            if 'SIGMA_XS' in subkeys: subkeys = np.delete(subkeys, np.where(subkeys=='SIGMA_XS'))
 
             if subkeys.size!=0:
                 # see if any BLS candidates are in the list
