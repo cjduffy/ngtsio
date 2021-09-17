@@ -27,7 +27,7 @@ def warning_on_one_line(message, category, filename, lineno, file=None, line='')
     return '\n%s: %s, line %s\n\t %s\n\n' % (category.__name__, filename, lineno, message)
 warnings.formatwarning = warning_on_one_line
 
-    
+
 
 ###############################################################################
 # Getter (Main Program)
@@ -41,41 +41,41 @@ def get(fieldname, ngts_version, keys, obj_id=None, obj_row=None, time_index=Non
 
     Parameters
     ----------
-        
+
     fieldname : str
         name of the NGTS-field, e.g. 'NG0304-1115'
-    
+
     keys : str / array of str
         which parameters shall be read out from the fits files, e.g. ['RA','DEC','HJD','FLUX','PERIOD','CANVAS_PERIOD','DILUTION']. See below for other valid requests.
-    
+
     obj_id, obj_row : int / str / textfilename / array of int / array of str
-        identifier of the objects to be read out. If empty, all objects will be retrieved. Only either obj_id or obj_row can be chosen as input, not both. obj_id reads out objects by their object IDs. obj_row reads the requested rows from the fits file. Examples:    
+        identifier of the objects to be read out. If empty, all objects will be retrieved. Only either obj_id or obj_row can be chosen as input, not both. obj_id reads out objects by their object IDs. obj_row reads the requested rows from the fits file. Examples:
             obj_id = 46,    obj_id = '046',    obj_id = '00046',    obj_id = [46,57,1337],    obj_id = range(1,100),    obj_id = 'object_ids.txt'
             obj_row = 1,    obj_row = [1,2,3,1337],     obj_row = range(1,100),     obj_row = 'object_rows.txt'
-    
+
     time_index, time_date, time_hjd, time_actionid : int / str / textfilename / array of int / array of str
         identifier of the times/exposures to be read out. If empty, all times/exposures will be retrieved. Only either of these can be chosen as input, not more than one. time_index reads out the requested columns from the fits file, and hence allows to read out as little as one exposure. time_date reads all exposures per given calendar date(s). time_hjd reads all exposures per given HJD-date (only HJD values given as integers are accepted). time_actionid reads all exposures per given action ID. Examples:
             time_index = 1,    time_index = [1,2,3,1337],    time_index = range(1,100),    time_index = 'time_indices.txt'
             time_date = 20151104,    time_date = '20151104',    time_date = '2015-11-04',    time_date = '2015/11/04',    time_date = 'dates.txt'
             time_hjd = 674,    time_hjd = [674,675,680],    time_hjd = 'hjds.txt'
-            time_actionid = 108583,    time_actionid = [108583,133749],    time_actionid = 'actionids.txt'      
-    
+            time_actionid = 108583,    time_actionid = [108583,133749],    time_actionid = 'actionids.txt'
+
     bls_rank : int
         which BLS RANK should be read out from the BLS fits files (e.g. when reading 'PERIOD')
-        
+
     indexing : str
         following which format are the obj_rows and time_indices given (standard is 'fits')?
             'fits': indexing rows from 1
-            'python': indexing rows from 0    
-    
+            'python': indexing rows from 0
+
     fitsreader : str
-        'pyfits' or 'astropy': use the astropy.io.fits module. 
-        'fitsio' or 'cfitsio': use the fitsio module (standard) 
+        'pyfits' or 'astropy': use the astropy.io.fits module.
+        'fitsio' or 'cfitsio': use the fitsio module (standard)
         fitsio seems to perform best, see below for performance tests.
-     
-    simplify : bool  
+
+    simplify : bool
         if True and only one object is requested, it simplifies the dictionary entries into 1D nd.arrays (otherwise they will be 2D nd.arrays with an empty dimension). Standard is True.
-   
+
     fnames : dict
         This allows to manually pass a dictionary of filenames. Leave blank if you want to run it on Warwick's or Cambridge's NGTS cluster. Contains the following keys:
         a) if used in a pipeline run:
@@ -87,11 +87,11 @@ def get(fieldname, ngts_version, keys, obj_id=None, obj_row=None, time_index=Non
         fnames['decorr'] (optional)
         fnames['canvas'] (optional)
         fnames['dilution'] (optional)
-            
-    
+
+
     root : str
         This allows to manually pass a single root directory. Leave blank if you want to run it on Warwick's or Cambridge's NGTS cluster. The root directory structure has to contain all individual fits files.
-    
+
     roots : dict
         This allows to manually pass different root directories, such as for prodstore/0*/[MergePipe*, BLSPipe*, SysremPipe*]. Leave blank if you want to run it on Warwick's or Cambridge's NGTS cluster. Contains the following keys:
             roots['nights']
@@ -100,10 +100,10 @@ def get(fieldname, ngts_version, keys, obj_id=None, obj_row=None, time_index=Non
             roots['decorr'] (optional)
             roots['canvas'] (optional)
             roots['dilution'] (optional)
-    
+
     silent : bool
         Whether a short report should be printed or not.
-        
+
     ngtsversion : str
         From which directory shall the files be read? Standard is usually the latest release. Irrelevant if filenames are given manually via fnames=fnames.
 
@@ -118,10 +118,10 @@ def get(fieldname, ngts_version, keys, obj_id=None, obj_row=None, time_index=Non
 
         From 'CATALOGUE' (per object):
         ['OBJ_ID', 'RA', 'DEC', 'REF_FLUX', 'CLASS', 'CCD_X', 'CCD_Y', 'FLUX_MEAN', 'FLUX_RMS', 'MAG_MEAN', 'MAG_RMS', 'NPTS', 'NPTS_CLIPPED']
-    
+
         From 'IMAGELIST' (per image):
         ['ACQUMODE', 'ACTIONID', 'ACTSTART', 'ADU_DEV', 'ADU_MAX', 'ADU_MEAN', 'ADU_MED', 'AFSTATUS', 'AGREFIMG', 'AGSTATUS', 'AG_APPLY', 'AG_CORRX', 'AG_CORRY', 'AG_DELTX', 'AG_DELTY', 'AG_ERRX', 'AG_ERRY', 'AIRMASS', 'BIASMEAN', 'BIASOVER', 'BIASPRE', 'BIAS_ID', 'BKG_MEAN', 'BKG_RMS', 'CAMERAID', 'CAMPAIGN', 'CCDTEMP', 'CCDTEMPX', 'CHSTEMP', 'CMD_DEC', 'CMD_DMS', 'CMD_HMS', 'CMD_RA', 'COOLSTAT', 'CROWDED', 'CTS_DEV', 'CTS_MAX', 'CTS_MEAN', 'CTS_MED', 'DARK_ID', 'DATE-OBS', 'DATE', 'DITHER', 'EXPOSURE', 'FCSR_ENC', 'FCSR_PHY', 'FCSR_TMP', 'FIELD', 'FILTFWHM', 'FLAT_ID', 'FLDNICK', 'GAIN', 'GAINFACT', 'HSS_MHZ', 'HTMEDXF', 'HTRMSXF', 'HTXFLAGD', 'HTXNFLAG', 'HTXRAD1', 'HTXSIG1', 'HTXTHTA1', 'HTXVAL1', 'IMAGE_ID', 'IMGCLASS', 'IMGTYPE', 'LST', 'MINPIX', 'MJD', 'MOONDIST', 'MOONFRAC', 'MOONPHSE', 'MOON_ALT', 'MOON_AZ', 'MOON_DEC', 'MOON_RA', 'NBSIZE', 'NIGHT', 'NUMBRMS', 'NXOUT', 'NYOUT', 'OBJECT', 'OBSSTART', 'PROD_ID', 'PSFSHAPE', 'RCORE', 'READMODE', 'READTIME', 'ROOFSTAT', 'SATN_ADU', 'SEEING', 'SKYLEVEL', 'SKYNOISE', 'STDCRMS', 'SUNDIST', 'SUN_ALT', 'SUN_AZ', 'SUN_DEC', 'SUN_RA', 'TC3_3', 'TC3_6', 'TC6_3', 'TC6_6', 'TCRPX2', 'TCRPX5', 'TCRVL2', 'TCRVL5', 'TEL_ALT', 'TEL_AZ', 'TEL_DEC', 'TEL_HA', 'TEL_POSA', 'TEL_RA', 'THRESHOL', 'TIME-OBS', 'TV6_1', 'TV6_3', 'TV6_5', 'TV6_7', 'VI_MINUS', 'VI_PLUS', 'VSS_USEC', 'WCSPASS', 'WCS_ID', 'WXDEWPNT', 'WXHUMID', 'WXPRES', 'WXTEMP', 'WXWNDDIR', 'WXWNDSPD', 'XENCPOS0', 'XENCPOS1', 'YENCPOS0', 'YENCPOS1', 'TMID']
-    
+
         From image data (per object and per image):
         HJD
         FLUX
@@ -146,33 +146,33 @@ def get(fieldname, ngts_version, keys, obj_id=None, obj_row=None, time_index=Non
 
         From 'CATALOGUE' (for all objects):
         ['OBJ_ID', 'BMAG', 'VMAG', 'RMAG', 'JMAG', 'HMAG', 'KMAG', 'MU_RA', 'MU_RA_ERR', 'MU_DEC', 'MU_DEC_ERR', 'DILUTION_V', 'DILUTION_R', 'MAG_MEAN', 'NUM_CANDS', 'NPTS_TOT', 'NPTS_USED', 'OBJ_FLAGS', 'SIGMA_XS', 'TEFF_VK', 'TEFF_JH', 'RSTAR_VK', 'RSTAR_JH', 'RPMJ', 'RPMJ_DIFF', 'GIANT_FLG', 'CAT_FLG']
-    
+
         From 'CANDIDATE' data (only for candidates):
         ['OBJ_ID', 'RANK', 'FLAGS', 'PERIOD', 'WIDTH', 'DEPTH', 'EPOCH', 'DELTA_CHISQ', 'CHISQ', 'NPTS_TRANSIT', 'NUM_TRANSITS', 'NBOUND_IN_TRANS', 'AMP_ELLIPSE', 'SN_ELLIPSE', 'GAP_RATIO', 'SN_ANTI', 'SN_RED', 'SDE', 'MCMC_PERIOD', 'MCMC_EPOCH', 'MCMC_WIDTH', 'MCMC_DEPTH', 'MCMC_IMPACT', 'MCMC_RSTAR', 'MCMC_MSTAR', 'MCMC_RPLANET', 'MCMC_PRP', 'MCMC_PRS', 'MCMC_PRB', 'MCMC_CHISQ_CONS', 'MCMC_CHISQ_UNC', 'MCMC_DCHISQ_MR', 'MCMC_PERIOD_ERR', 'MCMC_EPOCH_ERR', 'MCMC_WIDTH_ERR', 'MCMC_DEPTH_ERR', 'MCMC_RPLANET_ERR', 'MCMC_RSTAR_ERR', 'MCMC_MSTAR_ERR', 'MCMC_CHSMIN', 'CLUMP_INDX', 'CAT_IDX', 'PG_IDX', 'LC_IDX']
 
-    
+
     d) CANVAS Text File (if existant)
-    
+
         ['CANVAS_PERIOD','CANVAS_EPOCH','CANVAS_WIDTH','CANVAS_DEPTH','CANVAS_Rp','CANVAS_Rs',...]
-    
-    
+
+
     e) DILUTION Fits File (if existant)
-    
+
         'DILUTION'
-        
-    
+
+
     Returns
     -------
     dic : dict
         dictionary containing all the requested keys
-        
-        
+
+
     Note
     ----
     ngtsio can be used for either final products or within a pipeline run
     If used in pipeline run, fnames['BLSPipe_megafile'] is required
     If used for final products from prodstore/0* fnames['nights'], fnames['sysrem'] and fnames['bls'] may be required
-    
+
     Naming conventions differ between pipeline and final prodcuts
     In pipeline: FLUX
     In final prodcuts: FLUX3, SYSREM_FLUX3, DECORR_FLUX3
@@ -184,87 +184,87 @@ def get(fieldname, ngts_version, keys, obj_id=None, obj_row=None, time_index=Non
         warnings.warn('FLUX key is deprecated unless for in-pipeline use.  \
                        Please use FLUX3, FLUX4, FLUX5, SYSREM_FLUX3 or DECORR_FLUX3 for final products.')
 
-    if not silent: 
+    if not silent:
         print('Field name:', fieldname)
         print('NGTS version:', ngts_version)
 
     if (roots is None) and (fnames is None):
         roots = standard_roots(fieldname, ngts_version, root, silent)
-    
-    if fnames is None: 
+
+    if fnames is None:
         fnames = standard_fnames(fieldname, ngts_version, roots, silent)
-        
+
     elif 'BLSPipe_megafile' in fnames:
         fnames['nights'] = fnames['BLSPipe_megafile']
         fnames['CATALOGUE'] = fnames['BLSPipe_megafile']
         fnames['IMAGELIST'] = fnames['BLSPipe_megafile']
-    
+
     if fnames is not None:
         keys_0 = 1*keys #copy list
         keys_0.append('OBJ_ID')
-        
+
         #::: in pipeline only
         if ('SYSREM_FLUX3' in keys) and (fnames is not None) and ('BLSPipe_megafile' in fnames):
             keys.append('FLUX')
-        
+
         #::: append FLAGS for set_nan
-        if set_nan and ('FLAGS' not in keys_0): 
+        if set_nan and ('FLAGS' not in keys_0):
             keys.append('FLAGS')
-        
+
         #::: objects
         ind_objs, obj_ids = get_obj_inds(fnames, obj_id, obj_row, indexing, fitsreader, obj_sortby = 'obj_ids')
         if not silent: print('Object IDs (',len(obj_ids),'):', obj_ids)
-        
+
         #::: only proceed if at least one of the requested objects exists
         if isinstance(ind_objs,slice) or len(ind_objs)>0:
-            
+
             #::: time
             ind_time = get_time_inds(fnames, time_index, time_date, time_hjd, time_actionid, fitsreader, silent)
-            
+
             #::: get dictionary
             dic, keys = get_data(fnames, obj_ids, ind_objs, keys, bls_rank, ind_time, fitsreader)
-            
+
             #::: in pipeline only
             if ('SYSREM_FLUX3' in keys) and (fnames is not None) and ('BLSPipe_megafile' in fnames):
                 dic['SYSREM_FLUX3'] = dic['FLUX']
                 if 'FLUX' not in keys_0:
                     del dic['FLUX']
-                
+
             #::: set flagged values and flux==0 values to nan
             if set_nan:
                 dic = set_nan_dic(dic)
-            
+
             #::: remove entries that were only needed for readout / computing things
-            if ('FLAGS' in dic.keys()) and ('FLAGS' not in keys_0): 
+            if ('FLAGS' in dic.keys()) and ('FLAGS' not in keys_0):
                 del dic['FLAGS']
             #        if ('FLUX' in dic.keys()) and ('FLUX' not in keys_0): del dic['FLUX']
             #        if ('FLUX3_ERR' in dic.keys()) and ('FLUX3_ERR' not in keys_0): del dic['FLUX3_ERR']
             #        if ('SYSREM_FLUX3' in dic.keys()) and ('SYSREM_FLUX3' not in keys_0): del dic['SYSREM_FLUX3']
-            
+
             #::: convert RA and DEC from radian into degree if <CYCLE1706 and not in pipeline
             if ('BLSPipe_megafile' not in fnames) and (ngts_version in ('TEST10','TEST16','TEST16A','TEST18')):
                 if 'RA' in keys:
                     dic['RA'] = dic['RA']*180./np.pi
                 if 'DEC' in keys:
                     dic['DEC'] = dic['DEC']*180./np.pi
-    #        
+    #
             #::: simplify output if only for 1 object
-            if simplify: 
+            if simplify:
                 dic = simplify_dic(dic)
-            
+
             #::: add fieldname and ngts_version
             dic['FIELDNAME'] = fieldname
             dic['NGTS_VERSION'] = ngts_version
-            
+
             #::: check if all keys were retrieved
             check_dic(dic, keys_0, silent)
-            
+
         else:
             dic = None
- 
-    else: 
+
+    else:
         dic = None
-    
+
     return dic
 
 
@@ -274,10 +274,10 @@ def get(fieldname, ngts_version, keys, obj_id=None, obj_row=None, time_index=Non
 # Fielnames Formatting
 ###############################################################################
 def standard_roots(fieldname, ngts_version, root, silent):
-    
+
     try:
         if (root is None):
-    
+
             #::: on laptop (OS X)
             if sys.platform == "darwin":
                 roots = {}
@@ -287,7 +287,7 @@ def standard_roots(fieldname, ngts_version, root, silent):
                 roots['decorr'] = scalify(glob.glob('/Users/mx/Big_Data/BIG_DATA_NGTS/2017/prodstore/*/DecorrPipe*'+fieldname+'*'+ngts_version+'*'))
                 roots['dilution'] = None
                 roots['canvas'] = None
-    
+
             #::: on Cambridge servers
             elif 'ra.phy.cam.ac.uk' in socket.gethostname():
                 roots = {}
@@ -297,17 +297,18 @@ def standard_roots(fieldname, ngts_version, root, silent):
                 roots['decorr'] = scalify(glob.glob('/appcg/data2/NGTS/ngts_pipeline_output/prodstore/*/DecorrPipe*'+fieldname+'*'+ngts_version+'*'))
                 roots['dilution'] = None
                 roots['canvas'] = None
-    
+
             #::: on ngtshead (LINUX)
             if 'ngts' in socket.gethostname():
                 roots = {}
                 roots['nights'] = scalify(glob.glob('/ngts/prodstore/*/MergePipe*'+fieldname+'*'+ngts_version+'*'))
                 roots['sysrem'] = scalify(glob.glob('/ngts/prodstore/*/SysremPipe*'+fieldname+'*'+ngts_version+'*'))
+                roots['phot'] = sclify(glob.glob('/ngts/prodstore/*/PhotPipe*'+fieldname+'*'+ngts_version+'*'))
                 roots['bls'] = scalify(glob.glob('/ngts/prodstore/*/BLSPipe*'+fieldname+'*'+ngts_version+'*'))
                 roots['decorr'] = scalify(glob.glob('/ngts/prodstore/*/DecorrPipe*'+fieldname+'*'+ngts_version+'*'))
                 roots['dilution'] = None
                 roots['canvas'] = None
-    
+
         #if a single root is given, it will overwrite individual roots
         elif root is not None:
             roots = {}
@@ -316,35 +317,35 @@ def standard_roots(fieldname, ngts_version, root, silent):
             roots['bls'] = root
             roots['dilution'] = root
             roots['canvas'] = root
-        
+
         #otherwise roots has been given (try-except will catch the None or non-existing entries)
         else:
-            pass   
-        
+            pass
+
     except:
 #        raise ValueError('Requested files do not exist. Please check file directories.')
         warnings.warn('Requested roots do not exist. Please check file directories.')
         roots = None
-        
+
     return roots
-    
-    
-    
-    
+
+
+
+
 def standard_fnames(fieldname, ngts_version, roots, silent):
-    
-    try: 
+
+    try:
         fnames = {}
-        
+
         #Nights
         #a list of all single files (e.g. FLAGS, FLUX3, FLUX3_ERR, CCDX etc.)
         try:
             f_nights = os.path.join( roots['nights'], '*'+fieldname+'*.fits' )
-            fnames['nights'] = glob.glob( f_nights ) 
+            fnames['nights'] = glob.glob( f_nights )
         except:
             fnames['nights'] = None
 #            warnings.warn( str(fieldname)+': Fits files "nights" do not exist.' )
-        
+
         #BLS
         try:
             f_bls = os.path.join( roots['bls'], '*'+fieldname+'*.fits' )
@@ -352,7 +353,7 @@ def standard_fnames(fieldname, ngts_version, roots, silent):
         except:
             fnames['bls'] = None
 #            warnings.warn( str(fieldname)+': Fits files "bls" do not exist.' )
-            
+
         #SYSREM
         try:
             f_sysrem = os.path.join( roots['sysrem'], '*'+fieldname+'*SYSREM_FLUX3*.fits' )
@@ -360,7 +361,7 @@ def standard_fnames(fieldname, ngts_version, roots, silent):
         except:
             fnames['sysrem'] = None
 #            warnings.warn( str(fieldname)+': Fits files "sysrem" do not exist.' )
-            
+
         #DECORR
         try:
             f_decorr = os.path.join( roots['decorr'], '*'+fieldname+'*DECORR_FLUX3*.fits' )
@@ -368,20 +369,20 @@ def standard_fnames(fieldname, ngts_version, roots, silent):
         except:
             fnames['decorr'] = None
 #            warnings.warn( str(fieldname)+': Fits files "decorr" does not exist.' )
-        
+
         #set all individual filenames instead of 'nights'
         keys = ['CATALOGUE','CCDX','CCDY','CENTDX_ERR','CENTDX','CENTDY_ERR','CENTDY',
                 'FLAGS','FLUX3_ERR','FLUX3','FLUX4_ERR','FLUX4','FLUX5_ERR','FLUX5',
                 'HJD','IMAGELIST','SKYBKG','SUB_PROD_LIST']
         fnames = get_name(fnames,keys)
-        
+
         #TODO:
         fnames['dilution'] = None
         fnames['canvas'] = None
 
     except:
-#        raise ValueError('Requested files do not exist. Please check file directories.')  
-        warnings.warn('Requested files do not exist. Please check file directories.')   
+#        raise ValueError('Requested files do not exist. Please check file directories.')
+        warnings.warn('Requested files do not exist. Please check file directories.')
         fnames = None
 
     return fnames
@@ -394,18 +395,18 @@ def get_name(fnames, keys):
         fnames[key] = scalify([x for x in fnames['nights'] if key+'.fits' in x])
     return fnames
 
-    
+
 
 
 def scalify(l, out='first'):
-    if len(l) == 0: 
+    if len(l) == 0:
         return None
     else:
-        if out=='first': 
+        if out=='first':
             return l[0]
-        elif out=='last': 
+        elif out=='last':
             return l[-1]
-        elif out=='all': 
+        elif out=='all':
             return l
 
 
@@ -867,7 +868,7 @@ def get_time_inds(fnames, time_index, time_date, time_hjd, time_actionid, fitsre
 
 
 def get_indtime_from_timedate(fnames, time_date, fitsreader):
-    
+
 
     # if not list, make list
     if not isinstance(time_date, (tuple, list, np.ndarray)):
@@ -902,7 +903,7 @@ def get_indtime_from_timedate(fnames, time_date, fitsreader):
 
 
 def get_indtime_from_timehjd(fnames, time_hjd, fitsreader, silent):
-    
+
     # if not list, make list
     if not isinstance(time_hjd, (tuple, list, np.ndarray)):
         time_hjd = [time_hjd]
@@ -1112,7 +1113,7 @@ def pyfits_get_data(fnames, obj_ids, ind_objs, keys, bls_rank, ind_time=slice(No
 
     ###################### in pipeline: BLSPipe_megafile #####################
     if 'BLSPipe_megafile' in fnames:
-        
+
         with pyfits.open(fnames['BLSPipe_megafile'], mode='denywrite') as hdulist:
 
             #::: CATALOGUE
@@ -1142,11 +1143,11 @@ def pyfits_get_data(fnames, obj_ids, ind_objs, keys, bls_rank, ind_time=slice(No
                     del hdulist[key].data
 
             del hdulist
-                
-               
+
+
     ##################### final data prodcuts: prodstore/0*/  #####################
-    elif ('nights' in fnames) and (fnames['nights'] is not None):       
-            
+    elif ('nights' in fnames) and (fnames['nights'] is not None):
+
         #::: CATALOGUE
         with pyfits.open(fnames['CATALOGUE'], mode='denywrite') as hdulist:
             hdukey = 'CATALOGUE'
@@ -1173,7 +1174,7 @@ def pyfits_get_data(fnames, obj_ids, ind_objs, keys, bls_rank, ind_time=slice(No
                     if key in ['CENTDX','CENTDX_ERR','CENTDY','CENTDY_ERR']:
                         dic[key] = (dic[key] + CENTD_bzero) / CENTD_precision
                     del hdulist[key].data, hdulist
-        
+
 
 
     if ('sysrem' in fnames) and (fnames['sysrem'] is not None):
@@ -1251,8 +1252,8 @@ def pyfits_get_data(fnames, obj_ids, ind_objs, keys, bls_rank, ind_time=slice(No
                     del hdulist_sysrem[key].data
 
             del hdulist_sysrem
-            
-            
+
+
 
     ##################### fnames['dilution'] #####################
     '''
@@ -1298,7 +1299,7 @@ def fitsio_get_data(fnames, obj_ids, ind_objs, keys, bls_rank, ind_time=slice(No
 
     ###################### in pipeline: BLSPipe_megafile #####################
     if ('BLSPipe_megafile' in fnames) and (fnames['BLSPipe_megafile'] is not None):
-        
+
         with fitsio.FITS(fnames['nights'], vstorage='object') as hdulist:
 
             #::: fitsio does not work with slice arguments, convert to list
@@ -1373,22 +1374,22 @@ def fitsio_get_data(fnames, obj_ids, ind_objs, keys, bls_rank, ind_time=slice(No
                     j += 1
                 except:
                     break
-    
-        
+
+
 
     ##################### final data prodcuts: prodstore/0*/  #####################
     elif ('nights' in fnames) and (fnames['nights'] is not None):
-        
+
             #::: CATALOGUE
             with fitsio.FITS(fnames['CATALOGUE'], vstorage='object') as hdulist:
-                
+
                 #::: fitsio does not work with slice arguments, convert to list
                 allobjects = False
                 if isinstance (ind_objs, slice):
                     N_objs = int( hdulist['CATALOGUE'].get_nrows() )
                     ind_objs = range(N_objs)
                     allobjects = True
-                        
+
                 hdukey = 'CATALOGUE'
                 hdunames = hdulist[hdukey].get_colnames()
                 subkeys = np.intersect1d(hdunames, keys)
@@ -1398,15 +1399,15 @@ def fitsio_get_data(fnames, obj_ids, ind_objs, keys, bls_rank, ind_time=slice(No
                     for key in subkeys:
                         dic[key] = data[key] #copy.deepcopy( data[key] )
                     del data
-        
+
             #::: IMAGELIST
             with fitsio.FITS(fnames['IMAGELIST'], vstorage='object') as hdulist:
-        
+
                 #::: fitsio does not work with slice arguments, convert to list
                 if isinstance (ind_time, slice):
                     N_time = int( hdulist['IMAGELIST'].get_nrows() )
                     ind_time = range(N_time)
-                        
+
                 hdukey = 'IMAGELIST'
                 hdunames = hdulist[hdukey].get_colnames()
                 subkeys = np.intersect1d(hdunames, keys)
@@ -1416,15 +1417,15 @@ def fitsio_get_data(fnames, obj_ids, ind_objs, keys, bls_rank, ind_time=slice(No
                     for key in subkeys:
                         dic[key] = data[key] #copy.deepcopy( data[key] )
                     del data
-    
+
             #::: DATA HDUs
             for key in keys:
                 if (key in fnames) and (fnames[key] is not None):
                     with fitsio.FITS(fnames[key], vstorage='object') as hdulist:
-                    
+
                         hdukey = hdulist[0].get_extname()
                         if hdukey in keys:
-    
+
                             #::: read out individual objects (more memory efficient)
                             if allobjects == False:
                                 dic[key] = np.zeros(( len(ind_objs), len(ind_time) ))
@@ -1436,7 +1437,7 @@ def fitsio_get_data(fnames, obj_ids, ind_objs, keys, bls_rank, ind_time=slice(No
                                         buf = buf[:,ind_timeX]
                                     dic[key][i,:] = buf
                                 del buf
-    
+
                             #::: read out all objects at once
                             else:
                                 buf = hdulist[hdukey][:, slice( ind_time[0], ind_time[-1]+1)]
@@ -1445,13 +1446,13 @@ def fitsio_get_data(fnames, obj_ids, ind_objs, keys, bls_rank, ind_time=slice(No
                                     buf = buf[:,ind_timeX]
                                 dic[key] = buf
                                 del buf
-    
+
                             if key in ['CCDX','CCDY']:
                                 dic[key] = (dic[key] + CCD_bzero) / CCD_precision
                             if key in ['CENTDX','CENTDX_ERR','CENTDY','CENTDY_ERR']:
                                 dic[key] = (dic[key] + CENTD_bzero) / CENTD_precision
-                       
-                       
+
+
 
     if ('sysrem' in fnames) and (fnames['sysrem'] is not None):
         with fitsio.FITS(fnames['sysrem'], vstorage='object') as hdulist_sysrem:
@@ -1562,7 +1563,7 @@ def fitsio_get_data(fnames, obj_ids, ind_objs, keys, bls_rank, ind_time=slice(No
             j = 0
             while j!=-1:
                 try:
-                    hdukey = hdulist_sysrem[j].get_extname() 
+                    hdukey = hdulist_sysrem[j].get_extname()
                     if hdukey + '3' in keys: #little hack because of inconsistent extname convention
                         key = hdukey + '3' #little hack because of inconsistent extname convention
 
@@ -1589,8 +1590,8 @@ def fitsio_get_data(fnames, obj_ids, ind_objs, keys, bls_rank, ind_time=slice(No
                     j += 1
                 except:
                     break
-                
-                
+
+
     ##################### fnames['dilution'] #####################
     '''
     dilution fits files contain all object IDs as in the nightly fits files
@@ -1683,16 +1684,16 @@ def set_nan_dic(dic):
 def set_nan_single(dic):
     ###### REMOVE BROKEN ITEMS #######
     #::: nan
-    ind_broken = np.where( dic['FLAGS'] > 0 ) #(dic[key] == 0.) | 
+    ind_broken = np.where( dic['FLAGS'] > 0 ) #(dic[key] == 0.) |
 #    if key in dic: dic[key][ind_broken] = np.nan
 #    dic['HJD'][ind_broken] = np.nan #this is not allowed to be set to nan!!! Otherwise the binning will be messed up!!!
-    for key in ['FLUX','FLUX_ERR','FLUX3','FLUX3_ERR', 
+    for key in ['FLUX','FLUX_ERR','FLUX3','FLUX3_ERR',
                 'FLUX4','FLUX4_ERR','FLUX5','FLUX5_ERR',
                 'SYSREM_FLUX3','SYSREM_FLUX3_ERR',
                 'DECORR_FLUX3','DECORR_FLUX3_ERR',
                 'CCDX','CCDX_ERR','CCDY','CCDY_ERR',
                 'CENTDX','CENTDX_ERR','CENTDY','CENTDY_ERR']:
-        if key in dic: 
+        if key in dic:
             dic[key][ind_broken] = np.nan
     return dic
 
@@ -1709,14 +1710,14 @@ def set_nan_multi(dic):
 #        if 'CCDX' in dic: dic['CCDX'][obj_nr,ind_broken] = np.nan
 #        if 'CCDY' in dic: dic['CCDY'][obj_nr,ind_broken] = np.nan
 #        if 'CENTDX' in dic: dic['CENTDX'][obj_nr,ind_broken] = np.nan
-#        if 'CENTDY' in dic: dic['CENTDY'][obj_nr,ind_broken] = np.nan    
-        for key in ['FLUX','FLUX_ERR','FLUX3','FLUX3_ERR', 
+#        if 'CENTDY' in dic: dic['CENTDY'][obj_nr,ind_broken] = np.nan
+        for key in ['FLUX','FLUX_ERR','FLUX3','FLUX3_ERR',
                 'FLUX4','FLUX4_ERR','FLUX5','FLUX5_ERR',
                 'SYSREM_FLUX3','SYSREM_FLUX3_ERR',
                 'DECORR_FLUX3','DECORR_FLUX3_ERR',
                 'CCDX','CCDX_ERR','CCDY','CCDY_ERR',
                 'CENTDX','CENTDX_ERR','CENTDY','CENTDY_ERR']:
-            if key in dic: 
+            if key in dic:
                 dic[key][obj_nr,ind_broken] = np.nan
     return dic
 
@@ -1760,20 +1761,20 @@ if __name__ == '__main__':
 #    ngts_version = 'CYCLE1706'
 #    dic = get(fieldname, ngts_version, ['OBJ_ID', 'FLUX_MEAN', 'RA', 'DEC', 'NIGHT', 'AIRMASS', 'HJD', 'CCDX', 'CCDY', 'CENTDX', 'CENTDY', 'SYSREM_FLUX3', 'PERIOD', 'WIDTH', 'EPOCH', 'DEPTH', 'NUM_TRANSITS'], obj_id=obj_id, time_hjd=None, fnames=None)
 #    dic = get(fieldname, ngts_version, ['OBJ_ID'], time_index=0, fnames=None)
-           
+
 #    print get('NULL','NULL',['HJD','SYSREM_FLUX3'],obj_id=7619,fnames={'BLSPipe_megafile':'/Users/mx/Big_Data/BIG_DATA_NGTS/2016/TEST18/NG0304-1115_809_2016_TEST18.fits'})
-    
+
 #    fname = '/Users/mx/Big_Data/BIG_DATA_NGTS/2016/TEST18/NG0304-1115_809_2016_TEST18.fits'
 #    dic = get('NULL', 'NULL', ['SYSREM_FLUX3', 'RA', 'DEC', 'CCDX', 'CENTDX', 'DILUTION', 'PERIOD', 'CANVAS_PERIOD'], obj_row=100, fnames={'BLSPipe_megafile':fname})
 #    pprint(dic)
-   
+
 #    dic = get( 'NG0304-1115', 'CYCLE1706', ['HJD', 'RA', 'DEC', 'FLUX3_ERR', 'SYSREM_FLUX3', 'DECORR_FLUX3', 'DILUTION', 'PERIOD', 'CANVAS_PERIOD'], obj_row=100, set_nan=True)#, fitsreader='fitsio', time_index=range(1000))
 #    pprint(dic)
 #    plt.figure()
 #    plt.plot(dic['HJD'],dic['FLUX3'],'k.',rasterized=True)
 #    plt.plot(dic['HJD'],dic['SYSREM_FLUX3'],'r.',rasterized=True)
 #    plt.figure()
-#    plt.plot(dic['HJD'],dic['SYSREM_FLUX3']-dic['FLUX3'],'r.',rasterized=True)  
+#    plt.plot(dic['HJD'],dic['SYSREM_FLUX3']-dic['FLUX3'],'r.',rasterized=True)
 
 #    dic = get( 'NG0409-1941', 'CYCLE1706', ['HJD', 'FLUX3', 'SYSREM_FLUX3', 'DECORR_FLUX3', 'PERIOD', 'EPOCH'], obj_row=4277, set_nan=True)
 #    pprint(dic)
@@ -1781,9 +1782,9 @@ if __name__ == '__main__':
 #    axes[0].plot(dic['HJD'],dic['FLUX3'],'k.',rasterized=True)
 #    axes[0].plot(dic['HJD'],dic['SYSREM_FLUX3'],'r.',rasterized=True)
 #    axes[0].plot(dic['HJD'],dic['DECORR_FLUX3'],'g.',rasterized=True)
-#    axes[1].plot(dic['HJD'],dic['SYSREM_FLUX3']-dic['FLUX3'],'k.',rasterized=True)  
-#    axes[2].plot(dic['HJD'],dic['DECORR_FLUX3']-dic['FLUX3'],'k.',rasterized=True)  
-#    axes[3].plot(dic['HJD'],dic['DECORR_FLUX3']-dic['SYSREM_FLUX3'],'k.',rasterized=True)  
+#    axes[1].plot(dic['HJD'],dic['SYSREM_FLUX3']-dic['FLUX3'],'k.',rasterized=True)
+#    axes[2].plot(dic['HJD'],dic['DECORR_FLUX3']-dic['FLUX3'],'k.',rasterized=True)
+#    axes[3].plot(dic['HJD'],dic['DECORR_FLUX3']-dic['SYSREM_FLUX3'],'k.',rasterized=True)
 #    plt.show()
-    
+
 
