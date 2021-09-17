@@ -361,6 +361,11 @@ def standard_fnames(fieldname, ngts_version, roots, silent):
         except:
             fnames['sysrem'] = None
 #            warnings.warn( str(fieldname)+': Fits files "sysrem" do not exist.' )
+		try:
+			f_sysrem_im = os.path.join( roots['sysrem'], '*'+fieldname+'*SYSREM_IMAGELIST*.fits')
+			fnames['sysrem_im'] = glob.glob( f_sysrem_im )[-1]
+		except:
+			fnames['sysrem_im'] = None
 
         #DECORR
         try:
