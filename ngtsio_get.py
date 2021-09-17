@@ -303,7 +303,7 @@ def standard_roots(fieldname, ngts_version, root, silent):
                 roots = {}
                 roots['nights'] = scalify(glob.glob('/ngts/prodstore/*/MergePipe*'+fieldname+'*'+ngts_version+'*'))
                 roots['sysrem'] = scalify(glob.glob('/ngts/prodstore/*/SysremPipe*'+fieldname+'*'+ngts_version+'*'))
-                roots['phot'] = sclify(glob.glob('/ngts/prodstore/*/PhotPipe*'+fieldname+'*'+ngts_version+'*'))
+                roots['phot'] = scalify(glob.glob('/ngts/prodstore/*/PhotPipe*'+fieldname+'*'+ngts_version+'*'))
                 roots['bls'] = scalify(glob.glob('/ngts/prodstore/*/BLSPipe*'+fieldname+'*'+ngts_version+'*'))
                 roots['decorr'] = scalify(glob.glob('/ngts/prodstore/*/DecorrPipe*'+fieldname+'*'+ngts_version+'*'))
                 roots['dilution'] = None
@@ -362,7 +362,7 @@ def standard_fnames(fieldname, ngts_version, roots, silent):
             fnames['sysrem'] = None
 #            warnings.warn( str(fieldname)+': Fits files "sysrem" do not exist.' )
         try:
-            f_sysrem_im = os.path.join( roots['sysrem'], '*'+fieldname+'*SYSREM_IMAGELIST*.fits')
+            f_sysrem_im = os.path.join( roots['sysrem'], '*'+fieldname+'*SYSREM_IMAGELIST*.fits' )
             fnames['sysrem_im'] = glob.glob( f_sysrem_im )[-1]
         except:
             fnames['sysrem_im'] = None
