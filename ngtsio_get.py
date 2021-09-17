@@ -444,7 +444,7 @@ def get_obj_inds(fnames, obj_ids, obj_rows, indexing,fitsreader, obj_sortby = 'o
         inputtype = 'obj_ids'
 
         # b) test if non-empty list
-        if isinstance(obj_ids, (collections.Sequence, np.ndarray)) and not isinstance(obj_ids, (str, unicode)) and len(np.atleast_1d(obj_ids)) > 0:
+        if isinstance(obj_ids, (collections.Sequence, np.ndarray)) and not isinstance(obj_ids, (str)) and len(np.atleast_1d(obj_ids)) > 0:
             #make sure its not a 0-dimensional ndarray
             obj_ids = np.atleast_1d(obj_ids)
             # if list of integer or float -> convert to list of str
