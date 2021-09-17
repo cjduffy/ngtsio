@@ -1284,6 +1284,17 @@ def pyfits_get_data(fnames, obj_ids, ind_objs, keys, bls_rank, ind_time=slice(No
 
             del hdulist_dil
 
+    ##################### fnames['sysrem_im'] #####################
+    '''
+    sysrem imagelist fits contains additional metadata on a per image basis
+    '''
+
+    if ('sysrem_im' in fnames) and (fnames['sysrem_im'] is not None):
+    	with pyfits.open(fnames['sysrem_im'], mode='denywrite') as hdulist_sysrem_im:
+    		hdu = hdulist_syrem_im[1].data
+    		for key in np.intersect1d(hdu.names, keys):
+    			dic[key] = hdu[key][ind_name]
+    		del hdu, hudlist_sysrem_im[1].data, hdulist_sysrem_im
 
 
     #::: output as numpy ndarrays
