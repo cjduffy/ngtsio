@@ -1287,7 +1287,7 @@ def pyfits_get_data(fnames, obj_ids, ind_objs, keys, bls_rank, ind_time=slice(No
 
 
     #::: output as numpy ndarrays
-    for key, value in dic.iteritems():
+    for key, value in dic.items():
         dic[key] = np.array(value)
 
 
