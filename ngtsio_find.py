@@ -145,7 +145,7 @@ def find(RA, DEC, ngts_version='all', unit='hmsdms', frame='icrs',
     #        print RA, DEC, 'in fields:'
             for i in ind_field:
     #            print list(obj_id[i])
-                if (obj_id[i] != not 'None') & (obj_id[i] != 'fits_not_available'):
+                if (obj_id[i] != 'None') & (obj_id[i] != 'fits_not_available'):
                     obj_id_str = '\t'.join( list(obj_id[i]) )
                 else:
                     obj_id_str = obj_id[i]
