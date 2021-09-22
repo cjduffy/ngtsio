@@ -305,7 +305,7 @@ def standard_roots(fieldname, ngts_version, root, silent):
                 roots['sysrem'] = scalify(glob.glob('/ngts/prodstore/*/SysremPipe*'+fieldname+'*'+ngts_version+'*'))
                 roots['phot'] = scalify(glob.glob('/ngts/prodstore/*/PhotPipe*'+fieldname+'*'+ngts_version+'*'))
                 roots['bls'] = scalify(glob.glob('/ngts/prodstore/*/BLSPipe*'+fieldname+'*'+ngts_version+'*'))
-                roots['decorr'] = scalify(glob.glob('/ngts/prodstore/*/DecorrPipe*'+fieldname+'*'+ngts_version+'*'))
+                roots['decorr'] = scalify(glob.glob('/ngts/prodstore/*/DecorrPipe*'+fieldname+'*'+ngts_version[:-3]+'*'))
                 roots['dilution'] = None
                 roots['canvas'] = None
 
