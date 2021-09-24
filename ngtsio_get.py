@@ -277,6 +277,8 @@ def standard_roots(fieldname, ngts_version, root, silent):
 
     try:
         if (root is None):
+            if ngts_version[-3:] == "_DC":
+                ngts_version = ngts_version[:-3]
 
             #::: on laptop (OS X)
             if sys.platform == "darwin":
@@ -301,17 +303,11 @@ def standard_roots(fieldname, ngts_version, root, silent):
             #::: on ngtshead (LINUX)
             if 'ngts' in socket.gethostname():
                 roots = {}
-                if ngts_version[-3:] == "_DC":
-                    roots['nights'] = scalify(glob.glob('/ngts/prodstore/*/MergePipe*'+fieldname+'*'+ngts_version[:-3]+'*'))
-                else:
-                    roots['nights'] = scalify(glob.glob('/ngts/prodstore/*/MergePipe*'+fieldname+'*'+ngts_version+'*'))
+                roots['nights'] = scalify(glob.glob('/ngts/prodstore/*/MergePipe*'+fieldname+'*'+ngts_version+'*'))
                 roots['sysrem'] = scalify(glob.glob('/ngts/prodstore/*/SysremPipe*'+fieldname+'*'+ngts_version+'*'))
                 roots['phot'] = scalify(glob.glob('/ngts/prodstore/*/PhotPipe*'+fieldname+'*'+ngts_version+'*'))
                 roots['bls'] = scalify(glob.glob('/ngts/prodstore/*/BLSPipe*'+fieldname+'*'+ngts_version+'*'))
-                if ngts_version[-3:] == "_DC":
-                    roots['decorr'] = scalify(glob.glob('/ngts/prodstore/*/DecorrPipe*'+fieldname+'*'+ngts_version[:-3]+'*'))
-                else:
-                    roots['decorr'] = scalify(glob.glob('/ngts/prodstore/*/DecorrPipe*'+fieldname+'*'+ngts_version+'*'))
+                roots['decorr'] = scalify(glob.glob('/ngts/prodstore/*/DecorrPipe*'+fieldname+'*'+ngts_version+'*'))
                 roots['dilution'] = None
                 roots['canvas'] = None
 
